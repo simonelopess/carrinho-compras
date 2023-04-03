@@ -11,6 +11,11 @@ export function CartProvider({ children }) {
     //findIndex 0 || -1
     const indexItem = cart.findIndex((item) => item.id === newItem.id);
 
+    //findIndex
+    //se ele não acha o elemento, ele retorna -1
+    //porém se ele acha o elemento, ele retorna a posição
+    //do elemento no array.
+
     if (indexItem !== -1) {
       //add quantidade
 
@@ -36,8 +41,25 @@ export function CartProvider({ children }) {
     setCart((products) => [...products, data]);
   }
 
+  function removeItemCart(product) {
+    const indexItem = cart.findIndex((item) => item.id === product.id);
+
+    if (cart[indexItem]?.amount > 1) {
+      let cartList = cart;
+
+      cartList[indexItem].amount = cartList[indexItem].amount - 1;
+      cartList[indexItem].total =
+        cartList[indexItem].total - cartList[indexItem].price;
+      setCart(cartList);
+      return;
+    }
+
+    const removeItem = cart.filter((item) => item.id !== product.id);
+    setCart(removeItem);
+  }
+
   return (
-    <CartContext.Provider value={{ cart, addItemCart }}>
+    <CartContext.Provider value={{ cart, addItemCart, removeItemCart }}>
       {children}
     </CartContext.Provider>
   );
